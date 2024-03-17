@@ -4,10 +4,10 @@ import styled from 'styled-components';
 import useLoadData from '../../hooks/useLoadData';
 
 const StyledNode = styled.div`
-  padding: 5px;
+  padding: 8px;
   border-radius: 8px;
   display: inline-block;
-  border: 1px solid red;
+  border: 1px solid #E4BD00;
 `;
 
 const UserTree = () => {

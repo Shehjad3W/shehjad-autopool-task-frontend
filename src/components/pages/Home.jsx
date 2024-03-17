@@ -1,6 +1,5 @@
 import React from 'react';
 import Hero from '../shared/Hero';
-import Houses from '../shared/Houses';
 import useLoadDataSecure from '../../hooks/useLoadDataSecure';
 import Login from './Login';
 
@@ -8,6 +7,9 @@ const Home = () => {
     const [user, refetchUser, isLoadingUser] = useLoadDataSecure('/users/me', 'User');
     console.log(user);
 
+    if (isLoadingUser) {
+        return
+    }
 
     return (
         <>
@@ -19,7 +21,6 @@ const Home = () => {
                     <Hero></Hero> :
                     <Login></Login>
             }
-            {/* <Houses></Houses> */}
         </>
     );
 };
