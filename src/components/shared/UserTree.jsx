@@ -11,40 +11,33 @@ const StyledNode = styled.div`
 `;
 
 const UserTree = () => {
-    const [users, isLoadingUsers, refetchUsers] = useLoadData('/users');
+    const [poolUsers, isLoadingUsers, refetchUsers] = useLoadData('/users/poolUsers');
     // console.log(users);
 
     if (isLoadingUsers) {
-        return <div>Loading...</div>; // Render loading indicator
+        return <span className="loading loading-bars loading-md"></span>; // Render loading indicator
     }
 
-    // Assuming A1 and A2 roles are always present
-    const A1 = users.find(user => user.role === 'A1');
+    const generateTreeNodes = (adminSerial) => {
+        return poolUsers.filter(u => u.poolDetails.adminSerial === adminSerial).map(user => {
+            return (
+                <TreeNode key={user.username} label={<StyledNode>{user.username}</StyledNode>}>
+                    {generateTreeNodes(user.poolDetails.poolSerial)}
+                </TreeNode>
+            );
+        });
+    }
 
     return (
         <Tree
             lineWidth={'2px'}
             lineColor={'green'}
             lineBorderRadius={'10px'}
-            label={<StyledNode>{A1?.username}</StyledNode>}
+            label={<StyledNode>{poolUsers?.find(u => u.poolDetails.poolSerial === 1).username}</StyledNode>}
         >
-            {users
-                .filter(user => user.role === `A2under${A1?.username}`)
-                .map((user) => (
-                    <TreeNode
-                        key={user.username} // Assuming user has a unique identifier like an id
-                        label={<StyledNode>{user.username}</StyledNode>}
-                    >
-                        {users
-                            .filter(u => u.role === `A3under${user.username}`)
-                            .map((userChild) => (
-                                <TreeNode
-                                    key={userChild.username} // Assuming user has a unique identifier like an id
-                                    label={<StyledNode>{userChild.username}</StyledNode>}
-                                />
-                            ))}
-                    </TreeNode>
-                ))}
+            {
+                generateTreeNodes(1)
+            }
         </Tree>
     );
 };

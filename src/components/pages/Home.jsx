@@ -8,7 +8,7 @@ const Home = () => {
     console.log(user);
 
     if (isLoadingUser) {
-        return
+        return <div className='w-full min-h-screen flex justify-center items-center'><span className="loading loading-bars loading-md"></span></div>
     }
 
     return (
