@@ -6,37 +6,50 @@ import React, { useState } from 'react';
 import { Tree, TreeNode } from 'react-organizational-chart';
 import styled from 'styled-components';
 
-const StyledNode = styled.div`
-  padding: 8px;
-  border-radius: 8px;
-  display: inline-block;
-  border: 1px solid #E4BD00;
+const StyledNode = styled.button`
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #FFD900;
+    user-select: none;
+
+    &:hover {
+        background-color: #F5F5F5; 
+        box-shadow: 0 0 5px 0 #FFD900;
+    }
 `;
 
 const Hero = () => {
     const axiosSecure = useAxiosSecure();
 
     const [user, refetchUser] = useLoadDataSecure('/users/me', 'User');
-    const [poolUsers, isLoadingUsers, refetchPoolUsers] = useLoadData('/users/poolUsers');
+    const [poolUsers, isLoadingPoolUsers, refetchPoolUsers] = useLoadData('/users/poolUsers');
     const [treeRoot, setTreeRoot] = useState(1);
+    console.log(treeRoot);
 
-    if (isLoadingUsers) {
+    if (isLoadingPoolUsers) {
         return <span className="loading loading-bars loading-md"></span>; // Render loading indicator
     }
 
     const generateTreeNodes = (adminSerial) => {
-        return poolUsers.filter(u => u.poolDetails.adminSerial === adminSerial).map(user => {
-            return (
-                <TreeNode
-                    onclick={() => setTreeRoot(user.poolDetails.poolSerial)}
-                    key={user.username}
-                    label={<StyledNode>{user.username}</StyledNode>}
-                >
-                    {generateTreeNodes(user.poolDetails.poolSerial)}
-                </TreeNode>
-            );
-        });
+        const filteredUsers = poolUsers.filter(u => u.poolDetails.adminSerial === adminSerial);
+
+        if (filteredUsers.length === 0) {
+            return null;
+        }
+
+        return filteredUsers.map(user => (
+            <TreeNode
+                key={user.username}
+                onClick={() => setTreeRoot(user.poolDetails.poolSerial)}
+                label={<StyledNode>{user.username}</StyledNode>}
+            >
+                {generateTreeNodes(user.poolDetails.poolSerial)}
+            </TreeNode>
+        ));
     }
+
 
     const handleEnterPool = () => {
         axiosSecure.put('/users/enterPool')
