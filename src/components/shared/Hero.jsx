@@ -24,12 +24,17 @@ const Hero = () => {
     const axiosSecure = useAxiosSecure();
     const [user, refetchUser] = useLoadDataSecure('/users/me', 'User');
     const [poolUsers, isLoadingPoolUsers, refetchPoolUsers] = useLoadData('/users/poolUsers');
-    const [treeRoot, setTreeRoot] = useState(1);
+    const [treeRoot, setTreeRoot] = useState(parseInt(localStorage.getItem('treeRoot')) || 1);
     const [hoveredUserEmail, setHoveredUserEmail] = useState(null);
     const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
     if (isLoadingPoolUsers) {
         return <span className="loading loading-bars loading-md"></span>; // Render loading indicator
+    }
+
+    const localStorageSetTreeRoot = (poolSerial) => {
+        localStorage.setItem('treeRoot', poolSerial);
+        setTreeRoot(poolSerial);
     }
 
     const handleUserHover = (email, event) => {
@@ -49,7 +54,7 @@ const Hero = () => {
                 key={user.username}
                 label={
                     <StyledNode
-                        onClick={() => setTreeRoot(user.poolDetails.poolSerial)}
+                        onClick={() => localStorageSetTreeRoot(user.poolDetails.poolSerial)}
                         onMouseEnter={(e) => handleUserHover(user.email, e)}
                         onMouseLeave={() => handleUserHover(null, { clientX: 0, clientY: 0 })}
                     >{user.username}</StyledNode>
@@ -101,7 +106,7 @@ const Hero = () => {
             >
                 {generateTreeNodes(treeRoot)}
             </Tree>
-            <button onClick={() => setTreeRoot(1)} className="btn btn-primary block mx-auto mt-8">Reset</button>
+            <button onClick={() => localStorageSetTreeRoot(1)} className="btn btn-primary block mx-auto mt-8">Reset</button>
         </div>
     );
 };
