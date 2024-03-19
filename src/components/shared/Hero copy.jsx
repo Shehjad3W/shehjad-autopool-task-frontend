@@ -22,20 +22,15 @@ const StyledNode = styled.button`
 
 const Hero = () => {
     const axiosSecure = useAxiosSecure();
+
     const [user, refetchUser] = useLoadDataSecure('/users/me', 'User');
     const [poolUsers, isLoadingPoolUsers, refetchPoolUsers] = useLoadData('/users/poolUsers');
     const [treeRoot, setTreeRoot] = useState(1);
-    const [hoveredUserEmail, setHoveredUserEmail] = useState(null);
-    const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+    console.log(treeRoot);
 
     if (isLoadingPoolUsers) {
         return <span className="loading loading-bars loading-md"></span>; // Render loading indicator
     }
-
-    const handleUserHover = (email, event) => {
-        setHoveredUserEmail(email);
-        setCursorPosition({ x: event.clientX, y: event.clientY });
-    };
 
     const generateTreeNodes = (adminSerial) => {
         const filteredUsers = poolUsers.filter(u => u.poolDetails.adminSerial === adminSerial);
@@ -50,15 +45,13 @@ const Hero = () => {
                 label={
                     <StyledNode
                         onClick={() => setTreeRoot(user.poolDetails.poolSerial)}
-                        onMouseEnter={(e) => handleUserHover(user.email, e)}
-                        onMouseLeave={() => handleUserHover(null, { clientX: 0, clientY: 0 })}
-                    >{user.username}</StyledNode>
-                }
+                    >{user.username}</StyledNode>}
             >
                 {generateTreeNodes(user.poolDetails.poolSerial)}
             </TreeNode>
         ));
     }
+
 
     const handleEnterPool = () => {
         axiosSecure.put('/users/enterPool')
@@ -73,33 +66,24 @@ const Hero = () => {
     }
 
     return (
-        <div className=' pt-20 p-6' onMouseMove={(e) => setCursorPosition({ x: e.clientX, y: e.clientY })}>
+        <div className=' pt-20 p-6'>
             {
                 !user?.poolDetails?.poolSerial &&
                 <button onClick={handleEnterPool} className="btn btn-primary block mx-auto">Enter Pool</button>
             }
 
-            <div className="divider">Pool</div>
 
-            {/* Side view to display the hovered user's email */}
-            {hoveredUserEmail && (
-                <div
-                    className="absolute bg-white border-[#FFD900] border-2 px-4 py-2 rounded-md z-10"
-                    style={{ top: cursorPosition.y, left: cursorPosition.x }}>
-                    <p>Email: {hoveredUserEmail}</p>
-                </div>
-            )}
+            <div className="divider">Pool</div>
 
             <Tree
                 lineWidth={'2px'}
                 lineColor={'#333'}
                 lineBorderRadius={'6px'}
-                label={<StyledNode
-                    onMouseEnter={(e) => handleUserHover(user.email, e)}
-                    onMouseLeave={() => handleUserHover(null, { clientX: 0, clientY: 0 })}
-                >{poolUsers?.find(u => u.poolDetails.poolSerial === treeRoot).username}</StyledNode>}
+                label={<StyledNode>{poolUsers?.find(u => u.poolDetails.poolSerial === treeRoot).username}</StyledNode>}
             >
-                {generateTreeNodes(treeRoot)}
+                {
+                    generateTreeNodes(treeRoot)
+                }
             </Tree>
             <button onClick={() => setTreeRoot(1)} className="btn btn-primary block mx-auto mt-8">Reset</button>
         </div>
