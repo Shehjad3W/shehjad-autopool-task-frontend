@@ -11,7 +11,7 @@ const StyledNode = styled.button`
     padding: 8px;
     border-radius: 8px;
     display: inline-block;
-    border: 1px solid #FFD900;
+    border: 2px solid #FFD900;
     user-select: none;
 
     &:hover {
@@ -42,8 +42,10 @@ const Hero = () => {
         return filteredUsers.map(user => (
             <TreeNode
                 key={user.username}
-                onClick={() => setTreeRoot(user.poolDetails.poolSerial)}
-                label={<StyledNode>{user.username}</StyledNode>}
+                label={
+                    <StyledNode
+                        onClick={() => setTreeRoot(user.poolDetails.poolSerial)}
+                    >{user.username}</StyledNode>}
             >
                 {generateTreeNodes(user.poolDetails.poolSerial)}
             </TreeNode>
@@ -75,14 +77,15 @@ const Hero = () => {
 
             <Tree
                 lineWidth={'2px'}
-                lineColor={'green'}
-                lineBorderRadius={'10px'}
+                lineColor={'#333'}
+                lineBorderRadius={'6px'}
                 label={<StyledNode>{poolUsers?.find(u => u.poolDetails.poolSerial === treeRoot).username}</StyledNode>}
             >
                 {
                     generateTreeNodes(treeRoot)
                 }
             </Tree>
+            <button onClick={() => setTreeRoot(1)} className="btn btn-primary block mx-auto mt-8">Reset</button>
         </div>
     );
 };
