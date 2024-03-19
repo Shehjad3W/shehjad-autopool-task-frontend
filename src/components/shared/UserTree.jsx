@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tree, TreeNode } from 'react-organizational-chart';
 import styled from 'styled-components';
 import useLoadData from '../../hooks/useLoadData';
@@ -12,6 +12,7 @@ const StyledNode = styled.div`
 
 const UserTree = () => {
     const [poolUsers, isLoadingUsers, refetchUsers] = useLoadData('/users/poolUsers');
+    const [treeRoot, setTreeRoot] = useState(1);
     // console.log(users);
 
     if (isLoadingUsers) {
@@ -21,7 +22,11 @@ const UserTree = () => {
     const generateTreeNodes = (adminSerial) => {
         return poolUsers.filter(u => u.poolDetails.adminSerial === adminSerial).map(user => {
             return (
-                <TreeNode key={user.username} label={<StyledNode>{user.username}</StyledNode>}>
+                <TreeNode
+                    onclick={() => setTreeRoot(user.poolDetails.poolSerial)}
+                    key={user.username}
+                    label={<StyledNode>{user.username}</StyledNode>}
+                >
                     {generateTreeNodes(user.poolDetails.poolSerial)}
                 </TreeNode>
             );
@@ -33,10 +38,10 @@ const UserTree = () => {
             lineWidth={'2px'}
             lineColor={'green'}
             lineBorderRadius={'10px'}
-            label={<StyledNode>{poolUsers?.find(u => u.poolDetails.poolSerial === 1).username}</StyledNode>}
+            label={<StyledNode>{poolUsers?.find(u => u.poolDetails.poolSerial === treeRoot).username}</StyledNode>}
         >
             {
-                generateTreeNodes(1)
+                generateTreeNodes(treeRoot)
             }
         </Tree>
     );
