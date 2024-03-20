@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import useAxiosPublic from '../hooks/useAxiosPublic';
+import { toast } from 'react-hot-toast';
 
 const AuthContext = createContext();
 
@@ -18,7 +19,8 @@ const AuthProvider = ({ children }) => {
             setToken(newToken);
             localStorage.setItem('token', newToken);
         } catch (error) {
-            console.error('Error signing up:', error);
+            console.error('Error signing up:', error.message);
+            toast.error(error.message);
         }
     };
 
@@ -30,6 +32,7 @@ const AuthProvider = ({ children }) => {
             localStorage.setItem('token', newToken);
         } catch (error) {
             console.error('Error logging in:', error);
+            toast.error(error.message);
         }
     };
 

@@ -100,8 +100,8 @@ const Hero = () => {
                 lineColor={'#333'}
                 lineBorderRadius={'6px'}
                 label={<StyledNode
-                    onMouseEnter={(e) => handleUserHover(user.email, e)}
-                    onMouseLeave={() => handleUserHover(null, { clientX: 0, clientY: 0 })}
+                // onMouseEnter={(e) => handleUserHover(user.email, e)}
+                // onMouseLeave={() => handleUserHover(null, { clientX: 0, clientY: 0 })}
                 >{poolUsers?.find(u => u.poolDetails.poolSerial === treeRoot).username}</StyledNode>}
             >
                 {generateTreeNodes(treeRoot)}

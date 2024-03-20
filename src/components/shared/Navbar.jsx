@@ -66,7 +66,7 @@ const Navbar = () => {
                 {
                     user ?
                         <div className="dropdown dropdown-end">
-                            <div tabIndex={0} role="button" className="btn m-1 font-semibold text-lg">{user?.username}</div>
+                            <div tabIndex={0} role="button" className="btn m-1 font-semibold text-lg">{user?.username}: <span className='font-normal text-sm'>{user?.email}</span></div>
                             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                 <li>
                                     <Link to='/profile'>Profile</Link>
